@@ -349,7 +349,10 @@ public class App {
         try {
             String sql;
             if (isNguoidung == 1) {
-                sql = "SELECT *, p.name tenSanpham  FROM dathang,sanpham p WHERE idNguoidung = ? and p.idSanpham = dathang.idSanpham; ";
+                sql = "SELECT d.idDathang, d.soluong, d.sdt, d.diachi, d.date, d.thanhTien, p.name AS tenSanpham " +
+                        "FROM dathang d " +
+                        "JOIN sanpham p ON d.idSanpham = p.idSanpham " +
+                        "WHERE d.idNguoidung = ?;";
                 pStmt = conn.prepareStatement(sql);
 
                 System.out.println(
@@ -375,8 +378,10 @@ public class App {
                             date.toString(), total);
                 }
             } else {
-                sql = "SELECT *, nguoidung.Hoten userName, p.name tenSanpham  FROM dathang,nguoidung, sanpham p \n" + //
-                        "WHERE nguoidung.idNguoidung = dathang.idNguoidung and p.idSanpham = dathang.idSanpham;";
+                sql = "SELECT d.*, p.name AS tenSanpham, u.Hoten AS userName " +
+                        "FROM dathang d " +
+                        "JOIN sanpham p ON d.idSanpham = p.idSanpham " +
+                        "JOIN nguoidung u ON d.idNguoidung = u.idNguoidung;";
                 pStmt = conn.prepareStatement(sql);
 
                 rs = pStmt.executeQuery();
