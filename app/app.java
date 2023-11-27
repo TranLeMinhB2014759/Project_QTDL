@@ -96,10 +96,10 @@ public class app {
             System.out.println("\n");
             System.out.println("--------------------USER--------------------");
             System.out.println("1. Xem danh sach san pham");
-            System.out.println("2. Them san pham vao gio hang");
-            System.out.println("3. Xem dat hang");
-            System.out.println("4. Sua dat hang");
-            System.out.println("5. Xoa dat hang");
+            System.out.println("2. Dat hang");
+            System.out.println("3. Xem cac don dat hang");
+            System.out.println("4. Sua don dat hang");
+            System.out.println("5. Xoa don dat hang");
             System.out.println("6. Dang xuat");
             System.out.println("0. Thoat");
             System.out.print("Chon: ");
