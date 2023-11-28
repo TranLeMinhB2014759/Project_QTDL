@@ -97,15 +97,16 @@ public class ProductService {
     }
 
     public boolean CheckPD_OLD(int idSanPham) {
-        String sql = "SELECT COUNT(*) AS count FROM Product WHERE product_id = ?";
-
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setInt(1, idSanPham);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                int count = resultSet.getInt("count");
-                return count > 0;
+        try {
+            CallableStatement cStmt = conn.prepareCall("{? = call checkProduct(?)}");
+            cStmt.registerOutParameter(1, Types.INTEGER);
+            cStmt.setInt(2, idSanPham);
+            cStmt.execute();
+            int kq = cStmt.getInt(1);
+            if (kq == 1) {
+                return true;
+            } else {
+                return false;
             }
         } catch (SQLException e) {
             e.printStackTrace();
