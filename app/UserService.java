@@ -5,10 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class NguoiDungService {
+public class UserService {
     private Connection conn;
 
-    public NguoiDungService(Connection conn) {
+    public UserService(Connection conn) {
         this.conn = conn;
     }
 
@@ -32,7 +32,7 @@ public class NguoiDungService {
         }
     }
 
-    public void suaNguoiDung(int idNguoiDung, String hoTen) {
+    public void EditUser(int idNguoiDung, String hoTen) {
         String sql = "UPDATE User SET ho_ten = ? WHERE user_id = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, hoTen);
@@ -49,7 +49,7 @@ public class NguoiDungService {
         }
     }
 
-    public void xoaNguoiDung(int idNguoiDung) {
+    public void deleteUser(int idNguoiDung) {
         String sql = "DELETE FROM User WHERE user_id = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, idNguoiDung);
@@ -65,8 +65,8 @@ public class NguoiDungService {
         }
     }
 
-    public boolean dangKyTaiKhoan(String hoTen, String sdt, String email, String matKhau, String diaChi) {
-        if (kiemTraEmailTonTai(email)) {
+    public boolean Signup(String hoTen, String sdt, String email, String matKhau, String diaChi) {
+        if (CheckEmail(email)) {
             System.out.println("Email da ton tai. Dang ky khong thanh cong.");
             return false;
         }
@@ -87,7 +87,7 @@ public class NguoiDungService {
         }
     }
 
-    public boolean dangNhap(String email, String matKhau) {
+    public boolean Login(String email, String matKhau) {
         int loggedInUserId = Connect.getLoggedInUserId();
         String sql = "SELECT * FROM User WHERE email = ? AND mat_khau = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -103,7 +103,7 @@ public class NguoiDungService {
         }
     }
 
-    public boolean kiemTraEmailTonTai(String email) {
+    public boolean CheckEmail(String email) {
         String sql = "SELECT * FROM User WHERE email = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, email);
@@ -116,7 +116,7 @@ public class NguoiDungService {
         }
     }
 
-    public int getNguoiDungIdByEmail(String email) {
+    public int GetUserbyId(String email) {
         int userId = -1; // Default value if not found
 
         String sql = "SELECT user_id FROM User WHERE email = ?";

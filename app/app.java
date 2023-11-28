@@ -8,7 +8,7 @@ public class app {
         showMainLoginMenu();
     }
 
-    private static void dangXuat() {
+    private static void logout() {
         Connect.setLoggedInUserId(-1);
         showMainLoginMenu();
     }
@@ -16,7 +16,7 @@ public class app {
     private static void showMainLoginMenu() {
         Scanner sc = new Scanner(System.in);
         Connection conn = Connect.getConnect();
-        NguoiDungService nguoiDungService = new NguoiDungService(conn);
+        UserService UserService = new UserService(conn);
 
         // Display menu
         while (true) {
@@ -37,8 +37,8 @@ public class app {
                     String loginEmail = scanner.next();
                     System.out.print("Nhap Mat Khau: ");
                     String loginPassword = scanner.next();
-                    if (nguoiDungService.dangNhap(loginEmail, loginPassword)) {
-                        Connect.setLoggedInUserId(nguoiDungService.getNguoiDungIdByEmail(loginEmail));
+                    if (UserService.Login(loginEmail, loginPassword)) {
+                        Connect.setLoggedInUserId(UserService.GetUserbyId(loginEmail));
                         if (loginEmail.equals("admin@gmail.com")) {
                             showMenuAdmin();
                         } else {
@@ -64,10 +64,10 @@ public class app {
                     System.out.print("Nhap Dia Chi: ");
                     String diaChi = scanner.nextLine();
 
-                    if (nguoiDungService.kiemTraEmailTonTai(email)) {
+                    if (UserService.CheckEmail(email)) {
                         System.out.println("Email da duoc dang ky. Vui long su dung email khac!!!");
                     } else {
-                        nguoiDungService.dangKyTaiKhoan(hoTen, sdt, email, matKhau, diaChi);
+                        UserService.Signup(hoTen, sdt, email, matKhau, diaChi);
                         System.out.println("Dang ky thanh cong!");
                     }
                     break;
@@ -88,18 +88,18 @@ public class app {
     private static void showUser() {
         Scanner sc = new Scanner(System.in);
         Connection conn = Connect.getConnect();
-        SanPhamService sanPhamService = new SanPhamService(conn);
-        DatHangService datHangService = new DatHangService(conn);
+        ProductService ProductService = new ProductService(conn);
+        OrderService OrderService = new OrderService(conn);
         System.out.println("Welcome to HouseWares1 Store!!!");
 
         while (true) {
             System.out.println("\n");
             System.out.println("--------------------USER--------------------");
             System.out.println("1. Xem danh sach san pham");
-            System.out.println("2. Dat hang");
+            System.out.println("2. Dat Hang");
             System.out.println("3. Xem cac don dat hang");
             System.out.println("4. Sua don dat hang");
-            System.out.println("5. Xoa don dat hang");
+            System.out.println("5. Xoa  don dat hang");
             System.out.println("6. Dang xuat");
             System.out.println("0. Thoat");
             System.out.print("Chon: ");
@@ -109,7 +109,7 @@ public class app {
             switch (choice) {
                 case 1:
                     System.out.println("\n");
-                    sanPhamService.hienThiDanhSachSanPham();
+                    ProductService.ShowProduct();
                     break;
 
                 case 2:
@@ -121,9 +121,9 @@ public class app {
                     System.out.print("Nhap so luong san pham: ");
                     int soLuong = sc.nextInt();
                     sc.nextLine();
-                    if (sanPhamService.kiemTraSanPhamTonTai(idSanPham)) {
+                    if (ProductService.CheckPD_OLD(idSanPham)) {
                         int idNguoiDung = Connect.getLoggedInUserId();
-                        datHangService.themDatHang(soLuong, idNguoiDung, idSanPham);
+                        OrderService.AddOrder(soLuong, idNguoiDung, idSanPham);
                         System.out.println("Dat hang thanh cong!");
                     } else {
                         System.out.println("San pham khong ton tai!");
@@ -133,7 +133,7 @@ public class app {
                 case 3:
                     System.out.println("\n");
                     int idNguoiDung = Connect.getLoggedInUserId();
-                    datHangService.hienThiGioHang(idNguoiDung);
+                    OrderService.ShowCart(idNguoiDung);
                     break;
                 case 4:
                     // Sua san pham trong dat hang
@@ -147,7 +147,7 @@ public class app {
                     sc.nextLine();
 
                     int idNguoiDungSua = Connect.getLoggedInUserId();
-                    datHangService.suaSanPhamTrongGioHang(idNguoiDungSua, idSanPhamSua, soLuongMoi);
+                    OrderService.EditCart(idNguoiDungSua, idSanPhamSua, soLuongMoi);
                     System.out.println("Sua dat hang thanh cong!");
                     break;
 
@@ -159,13 +159,13 @@ public class app {
                     sc.nextLine();
 
                     int idNguoiDungXoa = Connect.getLoggedInUserId();
-                    datHangService.xoaSanPhamTrongGioHang(idNguoiDungXoa, idSanPhamXoa);
+                    OrderService.deletCart(idNguoiDungXoa, idSanPhamXoa);
                     System.out.println("Xoa san pham trong dat hang thanh cong!");
                     break;
                 case 6:
                     System.out.println("\n");
                     System.out.println("Dang xuat tai khoan!");
-                    dangXuat();
+                    logout();
                 case 0:
                     System.out.println("\n");
                     Connect.disconnect();
@@ -181,9 +181,9 @@ public class app {
     private static void showMenuAdmin() {
         Scanner sc = new Scanner(System.in);
         Connection conn = Connect.getConnect();
-        NguoiDungService nguoiDungService = new NguoiDungService(conn);
-        SanPhamService sanPhamService = new SanPhamService(conn);
-        DatHangService datHangService = new DatHangService(conn);
+        UserService UserService = new UserService(conn);
+        ProductService ProductService = new ProductService(conn);
+        OrderService OrderService = new OrderService(conn);
         System.out.println("Chao mung admin vao he thong ban hang!!!");
         while (true) {
             System.out.println("\n");
@@ -216,7 +216,7 @@ public class app {
                     System.out.print("Nhap đia chi: ");
                     String diaChi = sc.nextLine();
 
-                    nguoiDungService.themNguoiDung(hoTen, sdt, email, matKhau, diaChi);
+                    UserService.themNguoiDung(hoTen, sdt, email, matKhau, diaChi);
                     break;
 
                 case 2:
@@ -227,19 +227,19 @@ public class app {
                     System.out.print("Nhap ho ten moi: ");
                     String hoTenMoi = sc.nextLine();
 
-                    nguoiDungService.suaNguoiDung(idSua, hoTenMoi);
+                    UserService.EditUser(idSua, hoTenMoi);
                     break;
 
                 case 3:
                     System.out.println("\n");
                     System.out.print("Nhap ID nguoi dung can xoa: ");
                     int idXoa = sc.nextInt();
-                    nguoiDungService.xoaNguoiDung(idXoa);
+                    UserService.deleteUser(idXoa);
                     break;
 
                 case 4:
                     System.out.println("\n");
-                    sanPhamService.hienThiDanhSachSanPham();
+                    ProductService.ShowProduct();
                     break;
 
                 case 5:
@@ -252,7 +252,7 @@ public class app {
                     System.out.print("Nhap mo ta san pham: ");
                     String mota = sc.nextLine();
 
-                    sanPhamService.themSanPham(tenSP, gia, mota);
+                    ProductService.AddPD(tenSP, gia, mota);
                     break;
                 case 6:
                     System.out.println("\n");
@@ -267,23 +267,23 @@ public class app {
                     System.out.print("Nhap mo ta san pham moi: ");
                     String MotaSP = sc.nextLine();
 
-                    sanPhamService.suaSanPham(idSuaSP, tenSuaSP, giaSP, MotaSP);
+                    ProductService.EditPD(idSuaSP, tenSuaSP, giaSP, MotaSP);
                     break;
                 case 7:
                     System.out.println("\n");
                     System.out.print("Nhap ID san pham can xoa: ");
                     int idSPXoa = sc.nextInt();
-                    sanPhamService.xoaSanPham(idSPXoa);
+                    ProductService.deletePD(idSPXoa);
                     break;
                 case 8:
                     System.out.println("\n");
                     int idNguoiDung = Connect.getLoggedInUserId();
-                    datHangService.hienThiGioHang(idNguoiDung);
+                    OrderService.ShowCart(idNguoiDung);
                     break;
                 case 9:
                     System.out.println("\n");
                     System.out.println("Dang xuat tai khoan!");
-                    dangXuat();
+                    logout();
                 case 0:
                     System.out.println("\n");
                     Connect.disconnect();

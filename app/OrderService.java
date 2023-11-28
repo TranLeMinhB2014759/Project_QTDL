@@ -7,15 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatHangService {
+public class OrderService {
 
     private Connection conn;
 
-    public DatHangService(Connection conn) {
+    public OrderService(Connection conn) {
         this.conn = conn;
     }
 
-    public void themDatHang(int soLuong, int idNguoiDung, int idSanPham) {
+    public void AddOrder(int soLuong, int idNguoiDung, int idSanPham) {
         String sqlGetProductPrice = "SELECT gia FROM Product WHERE product_id = ?";
 
         try (PreparedStatement priceStatement = conn.prepareStatement(sqlGetProductPrice)) {
@@ -49,7 +49,7 @@ public class DatHangService {
         }
     }
 
-    public void hienThiGioHang(int idNguoiDung) {
+    public void ShowCart(int idNguoiDung) {
         if (idNguoiDung == 1) {
             String sql = "SELECT u.ho_ten, sp.product_id, sp.ten_sp, sp.gia, dh.so_luong, dh.tong_chi_phi " +
                     "FROM ds_dat_hang dh " +
@@ -115,7 +115,7 @@ public class DatHangService {
         }
     }
 
-    public void suaSanPhamTrongGioHang(int idNguoiDung, int idSanPham, int soLuongMoi) {
+    public void EditCart(int idNguoiDung, int idSanPham, int soLuongMoi) {
         String selectSql = "SELECT gia FROM Product WHERE product_id = ?";
         String updateSql = "UPDATE ds_dat_hang SET so_luong=?, tong_chi_phi=? WHERE user_id=? AND product_id=?";
 
@@ -149,7 +149,7 @@ public class DatHangService {
         }
     }
 
-    public void xoaSanPhamTrongGioHang(int idNguoiDung, int idSanPham) {
+    public void deletCart(int idNguoiDung, int idSanPham) {
         String sql = "DELETE FROM ds_dat_hang WHERE user_id=? AND product_id=?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, idNguoiDung);
@@ -166,8 +166,8 @@ public class DatHangService {
         }
     }
 
-    public List<String> hienThiDanhSachDatHang() {
-        List<String> danhSachDatHang = new ArrayList<>();
+    public List<String> ShowListCart() {
+        List<String> ListCart = new ArrayList<>();
 
         try (PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM ds_dat_hang");
                 ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -180,13 +180,13 @@ public class DatHangService {
                         ", ID Nguoi dung: " + resultSet.getInt("user_id") +
                         ", ID San pham: " + resultSet.getInt("product_id");
 
-                danhSachDatHang.add(thongTinDatHang);
+                ListCart.add(thongTinDatHang);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return danhSachDatHang;
+        return ListCart;
     }
 }

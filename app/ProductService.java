@@ -4,24 +4,27 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.CallableStatement;
+import java.sql.Types;
 
-public class SanPhamService {
+public class ProductService {
 
     private Connection conn;
 
-    public SanPhamService(Connection conn) {
+    public ProductService(Connection conn) {
         this.conn = conn;
     }
 
-    public void themSanPham(String tenSanPham, int gia, String mota) {
-        String sql = "INSERT INTO Product (ten_sp, gia, mota) VALUES (?, ?, ?)";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setString(1, tenSanPham);
-            preparedStatement.setInt(2, gia);
-            preparedStatement.setString(3, mota);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
+    public void AddPD(String tenSanPham, int gia, String mota) {
+        try {
+            CallableStatement cStmt = conn.prepareCall("{call createProduct(?, ?, ?, ?)}");
+            cStmt.setString(1, tenSanPham);
+            cStmt.setInt(2, gia);
+            cStmt.setString(3, mota);
+            cStmt.registerOutParameter(4, Types.INTEGER);
+            cStmt.executeUpdate();
+            int kq = cStmt.getInt(4);
+            if (kq == 1) {
                 System.out.println("Them san pham thanh cong!");
             } else {
                 System.out.println("Them san pham khong thanh cong!");
@@ -31,7 +34,7 @@ public class SanPhamService {
         }
     }
 
-    public void suaSanPham(int idSuaSP, String tenSuaSP, int giaSP, String MotaSP) {
+    public void EditPD(int idSuaSP, String tenSuaSP, int giaSP, String MotaSP) {
         String sql = "UPDATE Product SET ten_sp=?, gia=?, mota=? WHERE product_id=?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, tenSuaSP);
@@ -50,7 +53,7 @@ public class SanPhamService {
         }
     }
 
-    public void xoaSanPham(int idSanPham) {
+    public void deletePD(int idSanPham) {
         String sql = "DELETE FROM Product WHERE product_id=?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, idSanPham);
@@ -66,7 +69,7 @@ public class SanPhamService {
         }
     }
 
-    public void hienThiDanhSachSanPham() {
+    public void ShowProduct() {
         String sql = "SELECT * FROM Product";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -92,7 +95,7 @@ public class SanPhamService {
         }
     }
 
-    public boolean kiemTraSanPhamTonTai(int idSanPham) {
+    public boolean CheckPD_OLD(int idSanPham) {
         String sql = "SELECT COUNT(*) AS count FROM Product WHERE product_id = ?";
 
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
