@@ -65,12 +65,7 @@ public class UserService {
         }
     }
 
-    public boolean Signup(String hoTen, String sdt, String email, String matKhau, String diaChi) {
-        if (CheckEmail(email)) {
-            System.out.println("Email da ton tai. Dang ky khong thanh cong.");
-            return false;
-        }
-
+    public void Signup(String hoTen, String sdt, String email, String matKhau, String diaChi) {
         String sql = "INSERT INTO User (ho_ten, sdt, email, mat_khau, dia_chi) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, hoTen);
@@ -78,12 +73,8 @@ public class UserService {
             preparedStatement.setString(3, email);
             preparedStatement.setString(4, matKhau);
             preparedStatement.setString(5, diaChi);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
     }
 

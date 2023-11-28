@@ -113,6 +113,7 @@ public class app {
                     break;
 
                 case 2:
+                    ProductService.ShowProduct();
                     System.out.println("\n");
                     System.out.print("Nhap ID san pham: ");
                     int idSanPham = sc.nextInt();
@@ -255,6 +256,7 @@ public class app {
                     ProductService.AddPD(tenSP, gia, mota);
                     break;
                 case 6:
+                    ProductService.ShowProduct();
                     System.out.println("\n");
                     System.out.print("Nhap ID san pham can sua: ");
                     int idSuaSP = sc.nextInt();
