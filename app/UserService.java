@@ -32,6 +32,33 @@ public class UserService {
         }
     }
 
+    public void ShowUser() {
+        String sql = "SELECT * FROM user";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // In tiêu đề bảng
+            System.out.format("%-5s | %-25s | %-15s | %-20s | %-20s\n",
+                    "ID", "Ten Tai Khoan", "SDT", "Email", "Dia Chi");
+            System.out.println(
+                    "----------------------------------------------------------------------------------------------");
+
+            while (resultSet.next()) {
+                int idUser = resultSet.getInt("user_id");
+                String tenUser = resultSet.getString("ho_ten");
+                String sdt = resultSet.getString("sdt");
+                String email = resultSet.getString("email");
+                String diachi = resultSet.getString("dia_chi");
+
+                // In thông tin sản phẩm
+                System.out.format("%-5d | %-25s | %-15s | %-20s | %-20s\n",
+                        idUser, tenUser, sdt, email, diachi);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void EditUser(int idNguoiDung, String hoTen) {
         String sql = "UPDATE User SET ho_ten = ? WHERE user_id = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {

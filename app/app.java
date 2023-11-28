@@ -190,14 +190,15 @@ public class app {
             System.out.println("\n");
             System.out.println("--------------------ADMIN--------------------");
             System.out.println("1. Them nguoi dung");
-            System.out.println("2. Sua nguoi dung");
-            System.out.println("3. Xoa nguoi dung");
-            System.out.println("4. Hien thi danh sach san pham");
-            System.out.println("5. Them san pham");
-            System.out.println("6. Sua san pham");
-            System.out.println("7. Xoa san pham");
-            System.out.println("8. Hien thi thong tin dat hang");
-            System.out.println("9. Dang xuat");
+            System.out.println("2. Hien thi danh sach nguoi dung");
+            System.out.println("3. Sua nguoi dung");
+            System.out.println("4. Xoa nguoi dung");
+            System.out.println("5. Hien thi danh sach san pham");
+            System.out.println("6. Them san pham");
+            System.out.println("7. Sua san pham");
+            System.out.println("8. Xoa san pham");
+            System.out.println("9. Hien thi thong tin dat hang");
+            System.out.println("10. Dang xuat");
             System.out.println("0. Thoat");
             System.out.print("Chon: ");
             int choice = sc.nextInt();
@@ -222,6 +223,12 @@ public class app {
 
                 case 2:
                     System.out.println("\n");
+                    UserService.ShowUser();
+                    break;
+
+                case 3:
+                    System.out.println("\n");
+                    UserService.ShowUser();
                     System.out.print("Nhap ID nguoi dung can sua: ");
                     int idSua = sc.nextInt();
                     sc.nextLine();
@@ -231,19 +238,20 @@ public class app {
                     UserService.EditUser(idSua, hoTenMoi);
                     break;
 
-                case 3:
+                case 4:
                     System.out.println("\n");
+                    UserService.ShowUser();
                     System.out.print("Nhap ID nguoi dung can xoa: ");
                     int idXoa = sc.nextInt();
                     UserService.deleteUser(idXoa);
                     break;
 
-                case 4:
+                case 5:
                     System.out.println("\n");
                     ProductService.ShowProduct();
                     break;
 
-                case 5:
+                case 6:
                     System.out.println("\n");
                     System.out.print("Nhap ten san pham: ");
                     String tenSP = sc.nextLine();
@@ -255,7 +263,7 @@ public class app {
 
                     ProductService.AddPD(tenSP, gia, mota);
                     break;
-                case 6:
+                case 7:
                     ProductService.ShowProduct();
                     System.out.println("\n");
                     System.out.print("Nhap ID san pham can sua: ");
@@ -271,18 +279,19 @@ public class app {
 
                     ProductService.EditPD(idSuaSP, tenSuaSP, giaSP, MotaSP);
                     break;
-                case 7:
+                case 8:
                     System.out.println("\n");
+                    ProductService.ShowProduct();
                     System.out.print("Nhap ID san pham can xoa: ");
                     int idSPXoa = sc.nextInt();
                     ProductService.deletePD(idSPXoa);
                     break;
-                case 8:
+                case 9:
                     System.out.println("\n");
                     int idNguoiDung = Connect.getLoggedInUserId();
                     OrderService.ShowCart(idNguoiDung);
                     break;
-                case 9:
+                case 10:
                     System.out.println("\n");
                     System.out.println("Dang xuat tai khoan!");
                     logout();

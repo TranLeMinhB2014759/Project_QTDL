@@ -55,12 +55,14 @@ public class ProductService {
     }
 
     public void deletePD(int idSanPham) {
-        String sql = "DELETE FROM Product WHERE product_id=?";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setInt(1, idSanPham);
+        try {
+            CallableStatement cStmt = conn.prepareCall("{call deleteProduct(?, ?)}");
 
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
+            cStmt.setInt(1, idSanPham);
+            cStmt.registerOutParameter(2, Types.INTEGER);
+            cStmt.executeUpdate();
+            int kq = cStmt.getInt(2);
+            if (kq == 1) {
                 System.out.println("Xoa san pham thanh cong!");
             } else {
                 System.out.println("Xoa san pham khong thanh cong!");
