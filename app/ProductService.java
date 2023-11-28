@@ -35,18 +35,19 @@ public class ProductService {
     }
 
     public void EditPD(int idSuaSP, String tenSuaSP, int giaSP, String MotaSP) {
-        String sql = "UPDATE Product SET ten_sp=?, gia=?, mota=? WHERE product_id=?";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setString(1, tenSuaSP);
-            preparedStatement.setInt(2, giaSP);
-            preparedStatement.setString(3, MotaSP);
-            preparedStatement.setInt(4, idSuaSP);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
+        try {
+            CallableStatement cStmt = conn.prepareCall("{call editProduct(?, ?, ?, ?, ?)}");
+            cStmt.setString(1, tenSuaSP);
+            cStmt.setInt(2, giaSP);
+            cStmt.setString(3, MotaSP);
+            cStmt.setInt(4, idSuaSP);
+            cStmt.registerOutParameter(5, Types.INTEGER);
+            cStmt.executeUpdate();
+            int kq = cStmt.getInt(5);
+            if (kq == 1) {
                 System.out.println("Sua san pham thanh cong!");
             } else {
-                System.out.println("Sua san pham khong thanh cong!");
+                System.out.println("San pham khong ton tai");
             }
         } catch (SQLException e) {
             e.printStackTrace();
