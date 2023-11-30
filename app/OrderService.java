@@ -138,26 +138,24 @@ public class OrderService {
                     selectStatement.setInt(1, idSanPham);
                     ResultSet productResultSet = selectStatement.executeQuery();
 
-                    if (productResultSet.next()) {
-                        int gia = productResultSet.getInt("gia");
-                        int tongChiPhiMoi = soLuongMoi * gia;
+                    productResultSet.next();
+                    int gia = productResultSet.getInt("gia");
+                    int tongChiPhiMoi = soLuongMoi * gia;
 
-                        try (PreparedStatement updateStatement = conn.prepareStatement(updateOrder)) {
-                            updateStatement.setInt(1, soLuongMoi);
-                            updateStatement.setInt(2, tongChiPhiMoi);
-                            updateStatement.setInt(3, idNguoiDung);
-                            updateStatement.setInt(4, idDatHang);
+                    try (PreparedStatement updateStatement = conn.prepareStatement(updateOrder)) {
+                        updateStatement.setInt(1, soLuongMoi);
+                        updateStatement.setInt(2, tongChiPhiMoi);
+                        updateStatement.setInt(3, idNguoiDung);
+                        updateStatement.setInt(4, idDatHang);
 
-                            int rowsAffected = updateStatement.executeUpdate();
-                            if (rowsAffected > 0) {
-                                System.out.println("Sua san pham trong gio hang thanh cong!");
-                            } else {
-                                System.out.println("Sua san pham trong gio hang khong thanh cong!");
-                            }
+                        int rowsAffected = updateStatement.executeUpdate();
+                        if (rowsAffected > 0) {
+                            System.out.println("Sua don hang thanh cong!");
+                        } else {
+                            System.out.println("Sua don hang khong thanh cong!");
                         }
-                    } else {
-                        System.out.println("Khong tim thay san pham trong CSDL!");
                     }
+
                 }
             } else {
                 System.out.println("Khong tim thay don hang trong CSDL!");

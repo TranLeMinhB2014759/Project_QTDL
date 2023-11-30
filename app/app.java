@@ -148,7 +148,6 @@ public class app {
 
                     int idNguoiDungSua = Connect.getLoggedInUserId();
                     OrderService.EditCart(idNguoiDungSua, idDatHang, soLuongMoi);
-                    System.out.println("Sua dat hang thanh cong!");
                     break;
 
                 case 5:
