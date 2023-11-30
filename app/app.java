@@ -90,7 +90,7 @@ public class app {
         Connection conn = Connect.getConnect();
         ProductService ProductService = new ProductService(conn);
         OrderService OrderService = new OrderService(conn);
-        System.out.println("Welcome to HouseWares1 Store!!!");
+        System.out.println("Welcome to HouseWares Store!!!");
 
         while (true) {
             System.out.println("\n");
@@ -234,8 +234,14 @@ public class app {
                     sc.nextLine();
                     System.out.print("Nhap ho ten moi: ");
                     String hoTenMoi = sc.nextLine();
+                    System.out.print("Nhap so dien thoai: ");
+                    String sdtMoi = sc.nextLine();
+                    System.out.print("Nhap email: ");
+                    String emailMoi = sc.nextLine();
+                    System.out.print("Nhap đia chi: ");
+                    String diaChiMoi = sc.nextLine();
 
-                    UserService.EditUser(idSua, hoTenMoi);
+                    UserService.EditUser(idSua, hoTenMoi, sdtMoi, emailMoi, diaChiMoi);
                     break;
 
                 case 4:

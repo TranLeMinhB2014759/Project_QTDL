@@ -59,11 +59,14 @@ public class UserService {
         }
     }
 
-    public void EditUser(int idNguoiDung, String hoTen) {
-        String sql = "UPDATE User SET ho_ten = ? WHERE user_id = ?";
+    public void EditUser(int idNguoiDung, String hoTen, String sdt, String email, String diachi) {
+        String sql = "UPDATE User SET ho_ten = ?, sdt = ?, email = ?, dia_chi =? WHERE user_id = ?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, hoTen);
-            preparedStatement.setInt(2, idNguoiDung);
+            preparedStatement.setString(2, sdt);
+            preparedStatement.setString(3, email);
+            preparedStatement.setString(4, diachi);
+            preparedStatement.setInt(5, idNguoiDung);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
