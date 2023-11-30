@@ -99,7 +99,7 @@ public class app {
             System.out.println("2. Dat Hang");
             System.out.println("3. Xem cac don dat hang");
             System.out.println("4. Sua don dat hang");
-            System.out.println("5. Xoa  don dat hang");
+            System.out.println("5. Xoa don dat hang");
             System.out.println("6. Dang xuat");
             System.out.println("0. Thoat");
             System.out.print("Chon: ");
@@ -140,7 +140,7 @@ public class app {
                     // Sua san pham trong dat hang
                     System.out.println("\n");
                     System.out.print("Nhap ID don dat hang: ");
-                    int idSanPhamSua = sc.nextInt();
+                    int idDatHang = sc.nextInt();
                     sc.nextLine();
 
                     System.out.print("Nhap so luong san pham moi: ");
@@ -148,7 +148,7 @@ public class app {
                     sc.nextLine();
 
                     int idNguoiDungSua = Connect.getLoggedInUserId();
-                    OrderService.EditCart(idNguoiDungSua, idSanPhamSua, soLuongMoi);
+                    OrderService.EditCart(idNguoiDungSua, idDatHang, soLuongMoi);
                     System.out.println("Sua dat hang thanh cong!");
                     break;
 
@@ -156,12 +156,11 @@ public class app {
                     // Xoa san pham trong dat hang
                     System.out.println("\n");
                     System.out.print("Nhap ID san pham muon xoa trong dat hang: ");
-                    int idSanPhamXoa = sc.nextInt();
+                    int idDatHangXoa = sc.nextInt();
                     sc.nextLine();
 
                     int idNguoiDungXoa = Connect.getLoggedInUserId();
-                    OrderService.deletCart(idNguoiDungXoa, idSanPhamXoa);
-                    System.out.println("Xoa san pham trong dat hang thanh cong!");
+                    OrderService.deletCart(idNguoiDungXoa, idDatHangXoa);
                     break;
                 case 6:
                     System.out.println("\n");

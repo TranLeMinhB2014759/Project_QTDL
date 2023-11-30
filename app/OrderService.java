@@ -1,11 +1,10 @@
 package app;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class OrderService {
 
@@ -51,41 +50,46 @@ public class OrderService {
 
     public void ShowCart(int idNguoiDung) {
         if (idNguoiDung == 1) {
-            String sql = "SELECT u.ho_ten, sp.product_id, sp.ten_sp, sp.gia, dh.so_luong, dh.tong_chi_phi " +
+            String sql = "SELECT u.ho_ten, dh.order_id, sp.ten_sp, sp.gia, dh.so_luong, dh.tong_chi_phi, dh.day " +
                     "FROM ds_dat_hang dh " +
                     "JOIN Product sp ON dh.product_id = sp.product_id " +
-                    "JOIN User u ON dh.user_id = u.user_id";
+                    "JOIN User u ON dh.user_id = u.user_id " +
+                    "ORDER BY dh.order_id DESC";
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 // In tiêu đề bảng
-                System.out.printf("%-20s | %-15s | %-20s | %-10s | %-10s | %-15s\n", "Khach Hang", "ID San Pham",
+                System.out.printf("%-20s | %-15s | %-20s | %-10s | %-10s | %-15s | %-10s\n", "Khach Hang",
+                        "ID Don Hang",
                         "Ten San Pham",
                         "Gia",
                         "So Luong",
-                        "Tong Chi Phi");
+                        "Tong Chi Phi",
+                        "Ngay dat hang");
                 System.out.println(
-                        "------------------------------------------------------------------------------------------------------------");
+                        "------------------------------------------------------------------------------------------------------------------------");
 
                 while (resultSet.next()) {
                     String tenUser = resultSet.getString("ho_ten");
-                    int idSanPham = resultSet.getInt("product_id");
+                    int idSanPham = resultSet.getInt("order_id");
                     String tenSP = resultSet.getString("ten_sp");
                     int gia = resultSet.getInt("gia");
                     int soLuong = resultSet.getInt("so_luong");
                     int tongChiPhi = resultSet.getInt("tong_chi_phi");
+                    Date ngayDat = resultSet.getDate("day");
 
                     // In thông tin sản phẩm trong giỏ hàng
-                    System.out.printf("%-20s | %-15d | %-20s | %-10d | %-10d | %-15d\n", tenUser, idSanPham, tenSP, gia,
+                    System.out.printf("%-20s | %-15d | %-20s | %-10d | %-10d | %-15d | %-10s\n", tenUser, idSanPham,
+                            tenSP, gia,
                             soLuong,
-                            tongChiPhi);
+                            tongChiPhi, ngayDat);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
-            String sql = "SELECT sp.product_id, sp.ten_sp, sp.gia, dh.so_luong, dh.tong_chi_phi " +
+            String sql = "SELECT dh.order_id, sp.ten_sp, sp.gia, dh.so_luong, dh.tong_chi_phi, dh.day " +
                     "FROM ds_dat_hang dh " +
                     "JOIN Product sp ON dh.product_id = sp.product_id " +
                     "WHERE dh.user_id = ?";
@@ -94,20 +98,23 @@ public class OrderService {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 // In tiêu đề bảng
-                System.out.printf("%-5s | %-20s | %-10s | %-10s | %-15s\n", "ID", "Ten San Pham", "Gia", "So Luong",
-                        "Tong Chi Phi");
-                System.out.println("---------------------------------------------------------------------");
+                System.out.printf("%-5s | %-20s | %-10s | %-10s | %-15s | %-10s\n", "ID", "Ten San Pham", "Gia",
+                        "So Luong",
+                        "Tong Chi Phi", "Ngay Dat Hang");
+                System.out.println(
+                        "-----------------------------------------------------------------------------------------------------");
 
                 while (resultSet.next()) {
-                    int idSanPham = resultSet.getInt("product_id");
+                    int idSanPham = resultSet.getInt("order_id");
                     String tenSP = resultSet.getString("ten_sp");
                     int gia = resultSet.getInt("gia");
                     int soLuong = resultSet.getInt("so_luong");
                     int tongChiPhi = resultSet.getInt("tong_chi_phi");
+                    Date ngayDat = resultSet.getDate("day");
 
                     // In thông tin sản phẩm trong giỏ hàng
-                    System.out.printf("%-5d | %-20s | %-10d | %-10d | %-15d\n", idSanPham, tenSP, gia, soLuong,
-                            tongChiPhi);
+                    System.out.printf("%-5d | %-20s | %-10d | %-10d | %-15d | %-10s\n", idSanPham, tenSP, gia, soLuong,
+                            tongChiPhi, ngayDat);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -115,45 +122,56 @@ public class OrderService {
         }
     }
 
-    public void EditCart(int idNguoiDung, int idSanPham, int soLuongMoi) {
-        String selectSql = "SELECT gia FROM Product WHERE product_id = ?";
-        String updateSql = "UPDATE ds_dat_hang SET so_luong=?, tong_chi_phi=? WHERE user_id=? AND product_id=?";
+    public void EditCart(int idNguoiDung, int idDatHang, int soLuongMoi) {
+        String selectOrder = "SELECT order_id, product_id FROM ds_dat_hang WHERE order_id = ?";
+        String selectProduct = "SELECT gia FROM Product WHERE product_id = ?";
+        String updateOrder = "UPDATE ds_dat_hang SET so_luong=?, tong_chi_phi=? WHERE user_id=? AND order_id= ?";
 
-        try (PreparedStatement selectStatement = conn.prepareStatement(selectSql)) {
-            // Retrieve the price of the product
-            selectStatement.setInt(1, idSanPham);
-            ResultSet resultSet = selectStatement.executeQuery();
+        try (PreparedStatement selectOrderStatement = conn.prepareStatement(selectOrder)) {
+            selectOrderStatement.setInt(1, idDatHang);
+            ResultSet resultSet = selectOrderStatement.executeQuery();
 
             if (resultSet.next()) {
-                int gia = resultSet.getInt("gia");
-                int tongChiPhiMoi = soLuongMoi * gia;
+                int idSanPham = resultSet.getInt("product_id");
 
-                try (PreparedStatement updateStatement = conn.prepareStatement(updateSql)) {
-                    updateStatement.setInt(1, soLuongMoi);
-                    updateStatement.setInt(2, tongChiPhiMoi);
-                    updateStatement.setInt(3, idNguoiDung);
-                    updateStatement.setInt(4, idSanPham);
+                try (PreparedStatement selectStatement = conn.prepareStatement(selectProduct)) {
+                    selectStatement.setInt(1, idSanPham);
+                    ResultSet productResultSet = selectStatement.executeQuery();
 
-                    int rowsAffected = updateStatement.executeUpdate();
-                    if (rowsAffected > 0) {
-                        System.out.println("Sua san pham trong gio hang thanh cong!");
+                    if (productResultSet.next()) {
+                        int gia = productResultSet.getInt("gia");
+                        int tongChiPhiMoi = soLuongMoi * gia;
+
+                        try (PreparedStatement updateStatement = conn.prepareStatement(updateOrder)) {
+                            updateStatement.setInt(1, soLuongMoi);
+                            updateStatement.setInt(2, tongChiPhiMoi);
+                            updateStatement.setInt(3, idNguoiDung);
+                            updateStatement.setInt(4, idDatHang);
+
+                            int rowsAffected = updateStatement.executeUpdate();
+                            if (rowsAffected > 0) {
+                                System.out.println("Sua san pham trong gio hang thanh cong!");
+                            } else {
+                                System.out.println("Sua san pham trong gio hang khong thanh cong!");
+                            }
+                        }
                     } else {
-                        System.out.println("Sua san pham trong gio hang khong thanh cong!");
+                        System.out.println("Khong tim thay san pham trong CSDL!");
                     }
                 }
             } else {
-                System.out.println("Khong tim thay san pham trong CSDL!");
+                System.out.println("Khong tim thay don hang trong CSDL!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void deletCart(int idNguoiDung, int idSanPham) {
-        String sql = "DELETE FROM ds_dat_hang WHERE user_id=? AND product_id=?";
+    public void deletCart(int idNguoiDung, int idDatHang) {
+        String sql = "DELETE FROM ds_dat_hang WHERE user_id=? AND order_id=?";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setInt(1, idNguoiDung);
-            preparedStatement.setInt(2, idSanPham);
+            preparedStatement.setInt(2, idDatHang);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
@@ -164,29 +182,5 @@ public class OrderService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public List<String> ShowListCart() {
-        List<String> ListCart = new ArrayList<>();
-
-        try (PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM ds_dat_hang");
-                ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            while (resultSet.next()) {
-                String thongTinDatHang = "ID: " + resultSet.getInt("id_dat_hang") +
-                        ", Tong chi phi: " + resultSet.getInt("tong_chi_phi") +
-                        ", So luong: " + resultSet.getInt("so_luong") +
-                        ", Ngay: " + resultSet.getTimestamp("ngay") +
-                        ", ID Nguoi dung: " + resultSet.getInt("user_id") +
-                        ", ID San pham: " + resultSet.getInt("product_id");
-
-                ListCart.add(thongTinDatHang);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return ListCart;
     }
 }
