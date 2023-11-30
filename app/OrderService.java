@@ -35,7 +35,7 @@ public class OrderService {
 
                     int rowsAffected = insertOrderStatement.executeUpdate();
                     if (rowsAffected > 0) {
-                        System.out.println("Them dat hang thanh cong!");
+                        System.out.println("Dat hang thanh cong!");
                     } else {
                         System.out.println("Them dat hang khong thanh cong!");
                     }

@@ -125,7 +125,6 @@ public class app {
                     if (ProductService.CheckPD_OLD(idSanPham)) {
                         int idNguoiDung = Connect.getLoggedInUserId();
                         OrderService.AddOrder(soLuong, idNguoiDung, idSanPham);
-                        System.out.println("Dat hang thanh cong!");
                     } else {
                         System.out.println("San pham khong ton tai!");
                     }
