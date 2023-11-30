@@ -153,7 +153,7 @@ public class app {
                 case 5:
                     // Xoa san pham trong dat hang
                     System.out.println("\n");
-                    System.out.print("Nhap ID san pham muon xoa trong dat hang: ");
+                    System.out.print("Nhap ID don hang muon xoa: ");
                     int idDatHangXoa = sc.nextInt();
                     sc.nextLine();
 
@@ -215,7 +215,7 @@ public class app {
                     System.out.print("Nhap đia chi: ");
                     String diaChi = sc.nextLine();
 
-                    UserService.themNguoiDung(hoTen, sdt, email, matKhau, diaChi);
+                    UserService.addUser(hoTen, sdt, email, matKhau, diaChi);
                     break;
 
                 case 2:
